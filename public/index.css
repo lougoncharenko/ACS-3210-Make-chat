@@ -118,6 +118,7 @@
     justify-content: flex-start;
     overflow-y: auto;
     flex: 4;
+    color: white;
   }
 
   .user-online {
