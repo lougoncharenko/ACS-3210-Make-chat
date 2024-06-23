@@ -4,8 +4,10 @@ const server = require('http').Server(app);
 
 // Sokcet.io
 const io = require('socket.io')(server);
+//We'll store our online users here
+let onlineUsers = {};
 io.on("connection", (socket) => {
-  require('./sockets/chat.js')(io, socket);
+  require('./sockets/chat.js')(io, socket, onlineUsers);
 })
 
 // //Express View Engine for Handlebars
