@@ -1,6 +1,15 @@
 // This is the server
 module.exports = (io, socket, onlineUsers, channels) => {
 
+    //Have the socket join the room of the channel
+    socket.on('user changed channel', (newChannel) => {
+        socket.join(newChannel);
+        socket.emit('user changed channel', {
+        channel : newChannel,
+        messages : channels[newChannel]
+        });
+    });
+
   // Listen for "new user" socket emits
   socket.on('new user', (username) => {
     //Save the username as key to access the user's socket id

@@ -5,6 +5,12 @@ $(document).ready( () => {
     let currentUser;
     // Get the online users from the server
     socket.emit('get online users');
+    
+    //Users can change the channel by clicking on its name.
+    $(document).on('click', '.channel', (e)=>{
+      let newChannel = e.target.textContent;
+      socket.emit('user changed channel', newChannel);
+    });
 
     $('#create-user-btn').click((e)=>{
       e.preventDefault();
