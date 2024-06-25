@@ -18,10 +18,14 @@ module.exports = (io, socket, onlineUsers, channels) => {
     socket["username"] = username;
     console.log(`✋ ${username} has joined the chat! ✋`);
     io.emit("new user", username);
+    // Send the existing channels to the new user
+    socket.emit('get channels', channels);
   })
 
    //Listen for new messages
    socket.on('new message', (data) => {
+    // Save the message to the channel's message array
+    channels[data.channel].push({ sender: data.sender, message: data.message });
     // Send that data back to ALL clients
     console.log(`🎤 ${data.sender}: ${data.message} 🎤`)
     io.emit('new message', data);
@@ -34,7 +38,7 @@ module.exports = (io, socket, onlineUsers, channels) => {
   })
 
   // This fires when a user closes out of the application
-// socket.on("disconnect") is a special listener that fires when a user exits out of the application.
+  // socket.on("disconnect") is a special listener that fires when a user exits out of the application.
     socket.on('disconnect', () => {
         //This deletes the user by using the username we saved to the socket
         delete onlineUsers[socket.username]
@@ -56,6 +60,15 @@ module.exports = (io, socket, onlineUsers, channels) => {
         messages : channels[newChannel]
         });
       });
+
+    // Have the socket join the room of the channel
+    socket.on('user changed channel', (newChannel) => {
+        socket.join(newChannel);
+        socket.emit('user changed channel', {
+        channel: newChannel,
+        messages: channels[newChannel]
+        });
+    });
 
 
 }
